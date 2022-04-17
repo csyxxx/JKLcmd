@@ -62,25 +62,28 @@ public class Main {
                         if(path2.exists()){
                             path = path2.getAbsolutePath();
                         }else{
-                            System.out.println("错误：系统找不到指定的路径");
+                            File path3 = new File(path1);
+                            if (path3.exists()){
+                                path = path3.getAbsolutePath();
+                            }else{
+                                System.out.println("错误：系统找不到指定的路径");
+                            }
                         }
                     }else if(s.startsWith("wget ")){
-                        int bytesum = 0;
-                        int byteread = 0;
+                        byte[] buffer = new byte[8 * 1024];
                         String url = s.substring(5);
                         URL url1 = new URL(url);
                         URLConnection urlConnection = url1.openConnection();
-                        InputStream inputStream = urlConnection.getInputStream();
+                        InputStream is = urlConnection.getInputStream();
                         String name1 = url1.getFile();
                         String[] list = name1.split("/");
                         String name = list[list.length -1];
-                        FileOutputStream fileOutputStream = new FileOutputStream(path + name);
-                        byte[] buff = new byte[1024];
-                        int i;
-                        while ((byteread = inputStream.read(buff)) != -1) {
-                            bytesum += byteread;
-                            fileOutputStream.write(buff, 0, byteread);
+                        FileOutputStream fos = new FileOutputStream(path + name);
+                        int len;
+                        while ((len = is.read(buffer)) != -1 || is.available() != 0) {
+                            fos.write(buffer, 0, len);
                         }
+
                     }
                     else{
                         try {
